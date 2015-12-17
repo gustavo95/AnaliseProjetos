@@ -18,11 +18,13 @@ public class Main {
 		fm = new FileManagement();
 		wc = new WebColector();
 		codes = new ArrayList<String>();
-		vulnerabilities = fm.readFile("/home/research/links2.txt");
+		vulnerabilities = fm.readFile("/home/research/links3.txt");
 
 		for (String linha : vulnerabilities) {
 			String cve = linha.split(" ")[0];
 			String links = linha.split(" ")[1];
+			
+			System.out.println(cve);
 
 			// Cria os diretórios dos CVEs
 			File dir = new File("/home/research/tomcat/" + cve + "/");
@@ -33,16 +35,20 @@ public class Main {
 			while (st.hasMoreTokens()) {
 				//Vai para o próximo link
 				String link = st.nextToken();
+				
 				//Obtém o número da revisão para salvar o arquivo
 				String revision = link.replaceAll(".*?revision=", "");
+				
+				System.out.println("> " + revision);
+								
+					//Busca os links na página
+					linkList = wc.getPageLinks(link, "(http.*svn.*viewvc.*tomcat.*r1.*pathrev.*)");
 
-				//Busca os links na página
-				linkList = wc.getPageLinks(link, "(http.*svn.*viewvc.*tomcat.*r1.*pathrev.*)");
+					for (String c : linkList) 
+						codes.add(wc.getCode(c));
 
-				for (String c : linkList) 
-					codes.add(wc.getCode(c));
-
-				fm.writeFile("/home/research/tomcat/" + cve + "/" + revision + ".diff", codes);
+					fm.writeFile("/home/research/tomcat/" + cve + "/" + revision + ".diff", codes);					
+				
 			}
 
 		}
