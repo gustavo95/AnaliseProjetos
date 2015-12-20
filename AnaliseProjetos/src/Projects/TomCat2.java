@@ -1,3 +1,5 @@
+package Projects;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.StringTokenizer;
 import Services.FileManagement;
 import Services.WebColector;
 
-public class Main {
+public class TomCat2 {
 	private static List<String> vulnerabilities;
 	private static List<String> codes;
 	private static List<String> linkList;
@@ -18,8 +20,11 @@ public class Main {
 		fm = new FileManagement();
 		wc = new WebColector();
 		codes = new ArrayList<String>();
-		vulnerabilities = fm.readFile("/home/research/links3.txt");
-
+		vulnerabilities = fm.readFile("/home/anthony/links.txt");
+		
+		File dir = new File("/home/anthony/tomcat/");
+		dir.mkdir();
+		
 		for (String linha : vulnerabilities) {
 			String cve = linha.split(" ")[0];
 			String links = linha.split(" ")[1];
@@ -27,7 +32,7 @@ public class Main {
 			System.out.println(cve);
 
 			// Cria os diretórios dos CVEs
-			File dir = new File("/home/research/tomcat/" + cve + "/");
+			dir = new File("/home/anthony/tomcat/" + cve + "/");
 			dir.mkdir();
 
 			StringTokenizer st = new StringTokenizer(links);
@@ -47,7 +52,7 @@ public class Main {
 					for (String c : linkList) 
 						codes.add(wc.getCode(c));
 
-					fm.writeFile("/home/research/tomcat/" + cve + "/" + revision + ".diff", codes);					
+					fm.writeFile("/home/anthony/tomcat/" + cve + "/" + revision + ".diff", codes);					
 				
 			}
 
